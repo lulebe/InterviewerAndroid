@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="de.lulebe.interviewer.OverviewActivity">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="96dp"
+        android:background="@color/colorPrimary">
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/fab"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginTop="68dp"
+        android:layout_gravity="end"
+        android:rotation="45"
+        android:background="@color/colorAccent"
+        android:foreground="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:elevation="8dp">
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_add_black_24dp"
+            android:rotation="315" />
+    </FrameLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_interviews"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="96dp"
+        android:clipToPadding="false"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:visibility="gone"/>
+
+    <FrameLayout
+        android:id="@+id/l_empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="96dp">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_question_answer_emptyplaceholder"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="64dp"
+            android:layout_gravity="center"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
+            android:text="@string/info_no_interviews"/>
+    </FrameLayout>
+
+</FrameLayout>

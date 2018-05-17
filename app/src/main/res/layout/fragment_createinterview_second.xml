@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="de.lulebe.interviewer.ui.interviewCreation.CreateInterviewFirstFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
+            android:text="Select when notifications will be shown."/>
+
+
+
+        <com.github.florent37.expansionpanel.ExpansionHeader
+            android:id="@+id/header1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            app:expansion_headerIndicator="@id/indicator1"
+            app:expansion_headerIndicatorRotationCollapsed="-90"
+            app:expansion_headerIndicatorRotationExpanded="0"
+            app:expansion_layout="@id/layout1"
+            app:expansion_toggleOnClick="true"
+            android:background="@drawable/bg_expansion_header"
+            android:foreground="?attr/selectableItemBackground">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
+                android:text="Months"/>
+
+            <TextView
+                android:id="@+id/tv_selected_months"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption"/>
+
+            <ImageView
+                android:id="@+id/indicator1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|end"
+                android:src="@drawable/ic_arrow_drop_down_black_24dp"
+                />
+        </com.github.florent37.expansionpanel.ExpansionHeader>
+
+        <com.github.florent37.expansionpanel.ExpansionLayout
+            android:id="@+id/layout1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp">
+                <de.lulebe.interviewer.ui.views.ChipMultiPickerView
+                    android:id="@+id/chips_months"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </FrameLayout>
+
+        </com.github.florent37.expansionpanel.ExpansionLayout>
+
+
+
+        <com.github.florent37.expansionpanel.ExpansionHeader
+            android:id="@+id/header2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            app:expansion_headerIndicator="@id/indicator2"
+            app:expansion_headerIndicatorRotationCollapsed="-90"
+            app:expansion_headerIndicatorRotationExpanded="0"
+            app:expansion_layout="@id/layout2"
+            app:expansion_toggleOnClick="true"
+            android:background="@drawable/bg_expansion_header"
+            android:foreground="?attr/selectableItemBackground">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
+                android:text="Days of the month"/>
+
+            <TextView
+                android:id="@+id/tv_selected_dates"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption"/>
+
+            <ImageView
+                android:id="@+id/indicator2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|end"
+                android:src="@drawable/ic_arrow_drop_down_black_24dp"
+                />
+        </com.github.florent37.expansionpanel.ExpansionHeader>
+
+        <com.github.florent37.expansionpanel.ExpansionLayout
+            android:id="@+id/layout2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp">
+                <de.lulebe.interviewer.ui.views.ChipMultiPickerView
+                    android:id="@+id/chips_dates"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </FrameLayout>
+
+        </com.github.florent37.expansionpanel.ExpansionLayout>
+
+
+
+        <com.github.florent37.expansionpanel.ExpansionHeader
+            android:id="@+id/header3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            app:expansion_headerIndicator="@id/indicator3"
+            app:expansion_headerIndicatorRotationCollapsed="-90"
+            app:expansion_headerIndicatorRotationExpanded="0"
+            app:expansion_layout="@id/layout3"
+            app:expansion_toggleOnClick="true"
+            android:background="@drawable/bg_expansion_header"
+            android:foreground="?attr/selectableItemBackground">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
+                android:text="Days of the week"/>
+
+            <TextView
+                android:id="@+id/tv_selected_days"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption"/>
+
+            <ImageView
+                android:id="@+id/indicator3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|end"
+                android:src="@drawable/ic_arrow_drop_down_black_24dp"
+                />
+        </com.github.florent37.expansionpanel.ExpansionHeader>
+
+        <com.github.florent37.expansionpanel.ExpansionLayout
+            android:id="@+id/layout3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp">
+                <de.lulebe.interviewer.ui.views.ChipMultiPickerView
+                    android:id="@+id/chips_days"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </FrameLayout>
+
+        </com.github.florent37.expansionpanel.ExpansionLayout>
+
+    </LinearLayout>
+
+</ScrollView>

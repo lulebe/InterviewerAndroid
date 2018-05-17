@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">Interviewer</string>
+    <string name="title_stats">Stats</string>
+    <string name="title_list">Questions</string>
+    <string name="title_settings">Settings</string>
+    <string name="createquestion_nextcaption_0">Customize answer options</string>
+    <string name="createquestion_nextcaption_1">Review the Question</string>
+    <string name="createquestion_nextcaption_2">Save the Question</string>
+    <string name="title_createquestion">Create Question</string>
+    <string-array name="create_question_steps">
+        <item>Question</item>
+        <item>Answers</item>
+        <item>Review</item>
+    </string-array>
+    <string name="createinterview_nextcaption_0">Customize Notifications</string>
+    <string name="createinterview_nextcaption_1">Review the Interview</string>
+    <string name="createinterview_nextcaption_2">Save the Interview</string>
+    <string-array name="create_interview_steps">
+        <item>General</item>
+        <item>Notifications</item>
+        <item>Review</item>
+    </string-array>
+    <string name="title_activity_overview">Your Interviews</string>
+    <string name="title_activity_create_interview">Create Interview</string>
+    <string name="action_settings">Settings</string>
+    <string name="info_no_interviews">You created no interviews so far.</string>
+</resources>
