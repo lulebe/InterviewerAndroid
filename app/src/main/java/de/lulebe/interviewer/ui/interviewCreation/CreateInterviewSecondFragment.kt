@@ -51,7 +51,7 @@ class CreateInterviewSecondFragment : Fragment() {
     }
 
     private fun updateViews() {
-        val notifications = (activity as CreateInterviewActivity).notifications
+        val notifications = (activity as CreateInterviewActivity).notificationsList[0]
         chips_months.setSelectedItems(notifications.months)
         tv_selected_months.text = MONTHS
                 .filterIndexed{ index, _ -> notifications.months.contains(index) }
@@ -71,19 +71,19 @@ class CreateInterviewSecondFragment : Fragment() {
         monthsPicker.items = MONTHS
         monthsPicker.selectionChangedListener = {
             tv_selected_months.text = MONTHS.filterIndexed { index, _ -> it.contains(index) }.joinToString(", ")
-            (activity as CreateInterviewActivity).notifications.months = it
+            (activity as CreateInterviewActivity).notificationsList[0].months = it
         }
         val datesPicker = root.findViewById<ChipMultiPickerView>(R.id.chips_dates)
         datesPicker.items = DATES
         datesPicker.selectionChangedListener = {
             tv_selected_dates.text = DATES.filterIndexed { index, _ -> it.contains(index) }.joinToString(", ")
-            (activity as CreateInterviewActivity).notifications.dates = it.map({ it+1 })
+            (activity as CreateInterviewActivity).notificationsList[0].dates = it.map({ it+1 })
         }
         val daysPicker = root.findViewById<ChipMultiPickerView>(R.id.chips_days)
         daysPicker.items = DAYS
         daysPicker.selectionChangedListener = {
             tv_selected_days.text = DAYS.filterIndexed { index, _ -> it.contains(index) }.joinToString(", ")
-            (activity as CreateInterviewActivity).notifications.days = it
+            (activity as CreateInterviewActivity).notificationsList[0].days = it
         }
         savedInstanceState?.let {
             val l1 = root.findViewById<ExpansionLayout>(R.id.layout1)

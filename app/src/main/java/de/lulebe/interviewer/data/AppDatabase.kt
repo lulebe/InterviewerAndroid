@@ -20,6 +20,8 @@ abstract class AppDatabase : RoomDatabase() {
 
     abstract fun interviewDao() : InterviewDao
     abstract fun interviewUserDao() : InterviewUserDao
+    abstract fun notificationsDao() : NotificationsDao
+    abstract fun questionDao() : QuestionDao
 
     companion object {
         private var db : AppDatabase? = null

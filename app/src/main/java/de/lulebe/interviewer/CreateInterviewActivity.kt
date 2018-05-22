@@ -2,6 +2,8 @@ package de.lulebe.interviewer
 
 import android.support.v4.app.Fragment
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.support.v4.content.res.ResourcesCompat
@@ -11,7 +13,10 @@ import android.view.MenuItem
 import android.view.View
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
+import de.lulebe.interviewer.background.NotificationWorker
 import de.lulebe.interviewer.data.*
+import de.lulebe.interviewer.helpers.bundleToList
+import de.lulebe.interviewer.helpers.listToBundle
 import de.lulebe.interviewer.ui.interviewCreation.CreateInterviewFirstFragment
 import de.lulebe.interviewer.ui.interviewCreation.CreateInterviewSecondFragment
 import de.lulebe.interviewer.ui.interviewCreation.CreateInterviewThirdFragment
@@ -28,7 +33,9 @@ class CreateInterviewActivity : AppCompatActivity() {
 
     private var mCurrentFragment = 0
     var interview = Interview(UUID.randomUUID(), "", ColorScheme.BUSINESS)
-    var notifications = Notifications(UUID.randomUUID(), interview.id, emptyList(), emptyList(), emptyList(), emptyList(), emptyList())
+    var notificationsList = listOf(
+            Notifications(UUID.randomUUID(), interview.id, emptyList(), emptyList(), emptyList(), emptyList(), emptyList())
+    )
     private var _canMoveOn = false
     var canMoveOn: Boolean
         get() = _canMoveOn
@@ -60,13 +67,14 @@ class CreateInterviewActivity : AppCompatActivity() {
         val out = TypedValue()
         theme.resolveAttribute(android.R.attr.selectableItemBackground, out, true)
         foregroundBtnNext = ResourcesCompat.getDrawable(resources, out.resourceId, theme)
+        window.setBackgroundDrawable(ColorDrawable(Color.parseColor("#444444")))
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
         outState?.let {
             it.putInt("currentFragment", mCurrentFragment)
             it.putBundle("interview", interview.toBundle())
-            it.putBundle("notifications", notifications.toBundle())
+            it.putBundle("notificationsList", listToBundle(notificationsList.map { it.toBundle() }))
         }
         super.onSaveInstanceState(outState)
     }
@@ -81,7 +89,8 @@ class CreateInterviewActivity : AppCompatActivity() {
             btn_back.visibility = View.GONE
         } else {
             interview = Interview.fromBundle(savedInstanceState.getBundle("interview"))
-            notifications = Notifications.fromBundle(savedInstanceState.getBundle("notifications"))
+            notificationsList = bundleToList(savedInstanceState.getBundle("notificationsList"))
+                    .map {Notifications.fromBundle(it) }
             mCurrentFragment = savedInstanceState.getInt("currentFragment")
             steps.go(mCurrentFragment, false)
             setupViewsForPage(mCurrentFragment)
@@ -91,6 +100,7 @@ class CreateInterviewActivity : AppCompatActivity() {
                 mCurrentFragment++
                 supportFragmentManager
                         .beginTransaction()
+                        .setCustomAnimations(R.anim.mainfragments_in_from_right, R.anim.mainfragments_out_to_left)
                         .replace(R.id.container_create_pages, getFragmentNo(mCurrentFragment))
                         .commit()
                 steps.go(mCurrentFragment, true)
@@ -104,6 +114,7 @@ class CreateInterviewActivity : AppCompatActivity() {
                 mCurrentFragment--
                 supportFragmentManager
                         .beginTransaction()
+                        .setCustomAnimations(R.anim.mainfragments_in_from_left, R.anim.mainfragments_out_to_right)
                         .replace(R.id.container_create_pages, getFragmentNo(mCurrentFragment))
                         .commit()
                 steps.go(mCurrentFragment, true)
@@ -168,6 +179,10 @@ class CreateInterviewActivity : AppCompatActivity() {
                     interview.id,
                     true
             ))
+            notificationsList.forEach {
+                db.notificationsDao().createNotifications(it)
+            }
+            NotificationWorker.enqueueNextNotification(applicationContext)
             uiThread {
                 val interviewIntent = Intent(this@CreateInterviewActivity, InterviewActivity::class.java)
                 interviewIntent.putExtra("interviewId", interview.id)

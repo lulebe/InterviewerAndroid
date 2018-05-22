@@ -13,8 +13,7 @@ import android.view.GestureDetector
 import android.view.Menu
 import android.view.MotionEvent
 import android.view.View
-import android.view.animation.AccelerateDecelerateInterpolator
-import android.view.animation.AccelerateInterpolator
+import android.view.animation.DecelerateInterpolator
 import android.widget.FrameLayout
 import de.lulebe.interviewer.R
 
@@ -38,7 +37,7 @@ class CutCornersCardView : FrameLayout {
         bgPaint.style = Paint.Style.FILL
 
         animator.duration = 70
-        animator.interpolator = AccelerateInterpolator()
+        animator.interpolator = DecelerateInterpolator()
         animator.addUpdateListener {
             setCornerCuts(it.animatedValue as Float)
         }

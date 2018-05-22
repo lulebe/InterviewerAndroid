@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import de.lulebe.interviewer.CreateInterviewActivity
 import de.lulebe.interviewer.R
+import kotlinx.android.synthetic.main.fragment_createinterview_third.*
 
 class CreateInterviewThirdFragment : Fragment() {
 
@@ -27,5 +28,6 @@ class CreateInterviewThirdFragment : Fragment() {
     }
 
     private fun updateViews() {
+        tv_name.text = (activity as CreateInterviewActivity).interview.name
     }
 }

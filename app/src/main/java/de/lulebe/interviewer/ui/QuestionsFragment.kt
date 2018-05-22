@@ -1,27 +1,76 @@
 package de.lulebe.interviewer.ui
 
 
+import android.arch.lifecycle.Observer
 import android.os.Bundle
 import android.content.Intent
 import android.support.v4.app.Fragment
+import android.support.v7.widget.GridLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import de.lulebe.interviewer.CreateQuestionActivity
+import de.lulebe.interviewer.InterviewActivity
 
 import de.lulebe.interviewer.R
+import de.lulebe.interviewer.data.AppDatabase
+import de.lulebe.interviewer.data.Question
+import de.lulebe.interviewer.ui.adapters.QuestionsAdapter
+import de.lulebe.interviewer.ui.helpers.fadeIn
+import kotlinx.android.synthetic.main.fragment_questions.*
 
 
 class QuestionsFragment : Fragment() {
+
+    private val mQuestionsAdapter = QuestionsAdapter({
+        Toast.makeText(context, "click question: ${it.question}", Toast.LENGTH_SHORT).show()
+    }, {
+        Toast.makeText(context, "edit question: ${it.question}", Toast.LENGTH_SHORT).show()
+    }, {
+        Toast.makeText(context, "delete question: ${it.question}", Toast.LENGTH_SHORT).show()
+    })
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         val rootView = inflater.inflate(R.layout.fragment_questions, container, false)
-        rootView.findViewById<View>(R.id.fab_add_question).setOnClickListener {
+        initViews(rootView)
+        return rootView
+    }
+
+    override fun onStart() {
+        super.onStart()
+        loadQuestions()
+    }
+
+    private fun initViews(root: View) {
+        root.findViewById<View>(R.id.fab_add_question).setOnClickListener {
             startActivity(Intent(activity, CreateQuestionActivity::class.java))
         }
-        return rootView
+        val rv = root.findViewById<RecyclerView>(R.id.rv_questions)
+        rv.adapter = mQuestionsAdapter
+        rv.layoutManager = GridLayoutManager(context, resources.getInteger(R.integer.overview_columns))
+    }
+
+    private fun loadQuestions() {
+        context?.applicationContext?.let { appCtx ->
+            (activity as InterviewActivity).getInterviewId()?.let { interviewId ->
+                val questionDao = AppDatabase.getDatabase(appCtx).questionDao()
+                val questions = questionDao.getAllQuestionsForInterview(interviewId)
+                questions.observe(this, Observer<List<Question>> {
+                    mQuestionsAdapter.setNewList(it)
+                    if (it == null || it.isEmpty()) {
+                        rv_questions.visibility = View.GONE
+                        l_empty.fadeIn()
+                    } else {
+                        rv_questions.visibility = View.VISIBLE
+                        l_empty.visibility = View.GONE
+                    }
+                })
+            }
+        }
     }
 
 }

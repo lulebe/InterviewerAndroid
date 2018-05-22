@@ -8,7 +8,6 @@ import android.support.v7.widget.GridLayoutManager
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import de.lulebe.interviewer.data.AppDatabase
 import de.lulebe.interviewer.data.Interview
 import de.lulebe.interviewer.ui.adapters.InterviewsAdapter
@@ -20,12 +19,15 @@ class OverviewActivity : AppCompatActivity() {
 
     private val clickCallback = { interview: Interview ->
         val interviewIntent = Intent(this, InterviewActivity::class.java)
-        interviewIntent.putExtra("interviewId", interview.id)
+        interviewIntent.putExtra("interviewId", interview.id.toString())
         startActivity(interviewIntent)
     }
 
     private val editCallback = { interview: Interview ->
-        Toast.makeText(this, "edit: ${interview.name}", Toast.LENGTH_SHORT).show()
+        val interviewIntent = Intent(this, InterviewActivity::class.java)
+        interviewIntent.putExtra("interviewId", interview.id.toString())
+        interviewIntent.putExtra("page", InterviewActivity.FRAGMENT_SETTINGS)
+        startActivity(interviewIntent)
     }
 
     private val deleteCallback = { interview: Interview ->
