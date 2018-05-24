@@ -1,20 +1,16 @@
 package de.lulebe.interviewer.ui.views
 
 import android.content.Context
-import android.gesture.Gesture
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
 import android.support.v4.content.res.ResourcesCompat
-import android.text.DynamicLayout
 import android.text.Layout
 import android.text.StaticLayout
 import android.text.TextPaint
 import android.util.AttributeSet
-import android.util.Log
 import android.util.TypedValue
-import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
 import de.lulebe.interviewer.R
@@ -22,8 +18,30 @@ import org.jetbrains.anko.collections.forEachWithIndex
 
 class ChipMultiPickerView : View {
 
+    private var _mFullWidthChips = false
+    var mFullWidthChips: Boolean
+        get() = _mFullWidthChips
+        set(value) {
+            _mFullWidthChips = value
+            requestLayout()
+        }
+    private var _mAllowMultiSelect = false
+    var mAllowMultiSelect: Boolean
+        get() = _mAllowMultiSelect
+        set(value) {
+            _mAllowMultiSelect = value
+        }
+
     constructor(context: Context) : super(context)
-    constructor(context: Context, attributeSet: AttributeSet) : super(context, attributeSet)
+    constructor(context: Context, attributeSet: AttributeSet) : super(context, attributeSet) {
+        val attrs = context.theme.obtainStyledAttributes(attributeSet, R.styleable.ChipMultiPickerView, 0, 0)
+        try {
+            mFullWidthChips = attrs.getBoolean(R.styleable.ChipMultiPickerView_fullWidthChips, false)
+            mAllowMultiSelect = attrs.getBoolean(R.styleable.ChipMultiPickerView_allowMultiSelect, false)
+        } finally {
+            attrs.recycle()
+        }
+    }
 
     private val selectedItemIndices = mutableListOf<Int>()
     var selectionChangedListener: ((List<Int>) -> Unit)? = null
@@ -75,7 +93,10 @@ class ChipMultiPickerView : View {
 
     fun setSelectedItems (selected: List<Int>) {
         selectedItemIndices.clear()
-        selectedItemIndices.addAll(selected)
+        if (mAllowMultiSelect)
+            selectedItemIndices.addAll(selected)
+        else
+            selected.firstOrNull()?.let { selectedItemIndices.add(it) }
         invalidate()
     }
 
@@ -83,12 +104,25 @@ class ChipMultiPickerView : View {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         val widthMeasure = MeasureSpec.getSize(widthMeasureSpec)
         calculateTextDimensions()
-        mBlockWidth = mTextWidth + (2 * mBlockPaint.strokeWidth) + (2 * BLOCK_PADDING)
-        mBlockHeight = mTextHeight + (2 * mBlockPaint.strokeWidth) + (2 * BLOCK_PADDING)
-        mElementsPerRow = Math.floor(widthMeasure.toDouble() / (mBlockWidth + (2 * BLOCK_MARGIN))).toInt()
-        mStartPadding = ((widthMeasure - (mElementsPerRow * (mBlockWidth + (2 * BLOCK_MARGIN)))) / 2).toInt()
-        val rowCount = Math.ceil(items.size / mElementsPerRow.toDouble()).toInt()
-        val heightMeasure = (rowCount * (mBlockHeight + (2 * BLOCK_MARGIN))).toInt()
+        val heightMeasure : Int
+        if (!mFullWidthChips) {
+            mBlockHeight = mTextHeight + (2 * mBlockPaint.strokeWidth) + (2 * BLOCK_PADDING)
+            mBlockWidth = mTextWidth + (2 * mBlockPaint.strokeWidth) + (2 * BLOCK_PADDING)
+            if (mBlockWidth < mBlockHeight)
+                mBlockWidth = mBlockHeight
+            mElementsPerRow = Math.floor(widthMeasure.toDouble() / (mBlockWidth + (2 * BLOCK_MARGIN))).toInt()
+            mStartPadding = ((widthMeasure - (mElementsPerRow * (mBlockWidth + (2 * BLOCK_MARGIN)))) / 2).toInt()
+            if (mElementsPerRow > items.size)
+                mStartPadding = ((widthMeasure - (items.size * (mBlockWidth + (2 * BLOCK_MARGIN)))) / 2).toInt()
+            val rowCount = Math.ceil(items.size / mElementsPerRow.toDouble()).toInt()
+            heightMeasure = (rowCount * (mBlockHeight + (2 * BLOCK_MARGIN))).toInt()
+        } else {
+            mBlockWidth = widthMeasure - (2 * BLOCK_MARGIN)
+            mBlockHeight = mTextHeight + (2 * mBlockPaint.strokeWidth) + (2 * BLOCK_PADDING)
+            mElementsPerRow = 1
+            mStartPadding = 0
+            heightMeasure = (items.size * (mBlockHeight + (2 * BLOCK_MARGIN))).toInt()
+        }
         generateItemLayouts()
         setMeasuredDimension(widthMeasure, heightMeasure)
     }
@@ -152,6 +186,8 @@ class ChipMultiPickerView : View {
         return super.onTouchEvent(event)
     }
 
+    public fun getSelectedItemIndices() = selectedItemIndices.toList()
+
     private fun calculateTextDimensions() {
         val textLayout = StaticLayout(items[0], mTextPaint, 1000, Layout.Alignment.ALIGN_NORMAL, 1F, 0F, true)
         mTextWidth = textLayout.getLineWidth(0)
@@ -195,10 +231,15 @@ class ChipMultiPickerView : View {
     }
 
     private fun clickedIndex (index: Int) {
-        if (selectedItemIndices.contains(index))
-            selectedItemIndices.remove(index)
-        else
+        if (mAllowMultiSelect) {
+            if (selectedItemIndices.contains(index))
+                selectedItemIndices.remove(index)
+            else
+                selectedItemIndices.add(index)
+        } else {
+            selectedItemIndices.clear()
             selectedItemIndices.add(index)
+        }
         selectionChangedListener?.invoke(selectedItemIndices.toList())
         invalidate()
     }

@@ -2,18 +2,16 @@ package de.lulebe.interviewer
 
 import android.support.v4.app.Fragment
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.support.v4.content.res.ResourcesCompat
 import android.support.v7.app.AppCompatActivity
+import android.text.format.DateUtils
 import android.util.TypedValue
 import android.view.MenuItem
 import android.view.View
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
-import de.lulebe.interviewer.background.NotificationWorker
 import de.lulebe.interviewer.data.*
 import de.lulebe.interviewer.helpers.bundleToList
 import de.lulebe.interviewer.helpers.listToBundle
@@ -24,18 +22,18 @@ import de.lulebe.interviewer.ui.interviewCreation.CreateInterviewThirdFragment
 import kotlinx.android.synthetic.main.activity_create_interview.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
+import java.time.Instant
 import java.util.*
 
 class CreateInterviewActivity : AppCompatActivity() {
     companion object {
-        const val MAX_FRAGMENT_NUMBER = 2
+        const val MAX_FRAGMENT_NUMBER = 3
     }
 
     private var mCurrentFragment = 0
     var interview = Interview(UUID.randomUUID(), "", ColorScheme.BUSINESS)
-    var notificationsList = listOf(
-            Notifications(UUID.randomUUID(), interview.id, emptyList(), emptyList(), emptyList(), emptyList(), emptyList())
-    )
+    var schedule = Schedule.createDefaultDaily(interview.id)
+    var notification = Notification(UUID.randomUUID(), interview.id, 0, 20, 0)
     private var _canMoveOn = false
     var canMoveOn: Boolean
         get() = _canMoveOn
@@ -67,14 +65,14 @@ class CreateInterviewActivity : AppCompatActivity() {
         val out = TypedValue()
         theme.resolveAttribute(android.R.attr.selectableItemBackground, out, true)
         foregroundBtnNext = ResourcesCompat.getDrawable(resources, out.resourceId, theme)
-        window.setBackgroundDrawable(ColorDrawable(Color.parseColor("#444444")))
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
         outState?.let {
             it.putInt("currentFragment", mCurrentFragment)
             it.putBundle("interview", interview.toBundle())
-            it.putBundle("notificationsList", listToBundle(notificationsList.map { it.toBundle() }))
+            it.putBundle("schedule", schedule.toBundle())
+            it.putBundle("notification", notification.toBundle())
         }
         super.onSaveInstanceState(outState)
     }
@@ -89,8 +87,8 @@ class CreateInterviewActivity : AppCompatActivity() {
             btn_back.visibility = View.GONE
         } else {
             interview = Interview.fromBundle(savedInstanceState.getBundle("interview"))
-            notificationsList = bundleToList(savedInstanceState.getBundle("notificationsList"))
-                    .map {Notifications.fromBundle(it) }
+            schedule = Schedule.fromBundle(savedInstanceState.getBundle("schedule"))
+            notification = Notification.fromBundle(savedInstanceState.getBundle("notification"))
             mCurrentFragment = savedInstanceState.getInt("currentFragment")
             steps.go(mCurrentFragment, false)
             setupViewsForPage(mCurrentFragment)
@@ -126,6 +124,7 @@ class CreateInterviewActivity : AppCompatActivity() {
     private fun getFragmentNo(number: Int) : Fragment = when (number) {
         0 -> CreateInterviewFirstFragment()
         1 -> CreateInterviewSecondFragment()
+        2 -> CreateInterviewThirdFragment()
         else -> CreateInterviewThirdFragment()
     }
 
@@ -159,6 +158,7 @@ class CreateInterviewActivity : AppCompatActivity() {
             0 -> tv_btn_next_caption.setText(R.string.createinterview_nextcaption_0)
             1 -> tv_btn_next_caption.setText(R.string.createinterview_nextcaption_1)
             2 -> tv_btn_next_caption.setText(R.string.createinterview_nextcaption_2)
+            3 -> tv_btn_next_caption.setText(R.string.createinterview_nextcaption_3)
         }
         if (page == MAX_FRAGMENT_NUMBER) {
             iv_nextbtn.setImageResource(R.drawable.ic_check_whitetransparent_24dp)
@@ -179,13 +179,9 @@ class CreateInterviewActivity : AppCompatActivity() {
                     interview.id,
                     true
             ))
-            notificationsList.forEach {
-                db.notificationsDao().createNotifications(it)
-            }
-            NotificationWorker.enqueueNextNotification(applicationContext)
             uiThread {
                 val interviewIntent = Intent(this@CreateInterviewActivity, InterviewActivity::class.java)
-                interviewIntent.putExtra("interviewId", interview.id)
+                interviewIntent.putExtra("interviewId", interview.id.toString())
                 startActivity(interviewIntent)
                 finish()
             }

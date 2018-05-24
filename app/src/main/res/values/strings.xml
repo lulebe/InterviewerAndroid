@@ -12,11 +12,13 @@
         <item>Answers</item>
         <item>Review</item>
     </string-array>
-    <string name="createinterview_nextcaption_0">Customize Notifications</string>
-    <string name="createinterview_nextcaption_1">Review the Interview</string>
-    <string name="createinterview_nextcaption_2">Save the Interview</string>
+    <string name="createinterview_nextcaption_0">Set a Schedule</string>
+    <string name="createinterview_nextcaption_1">Customize Notifications</string>
+    <string name="createinterview_nextcaption_2">Review the Interview</string>
+    <string name="createinterview_nextcaption_3">Save the Interview</string>
     <string-array name="create_interview_steps">
         <item>General</item>
+        <item>Schedule</item>
         <item>Notifications</item>
         <item>Review</item>
     </string-array>

@@ -29,7 +29,7 @@ class InterviewActivity : AppCompatActivity() {
             R.id.navigation_settings -> FRAGMENT_SETTINGS
             else -> FRAGMENT_STATS
         }
-        if (f == mCurrentFragmentNo) return@OnNavigationItemSelectedListener false
+        if (f == mCurrentFragmentNo) return@OnNavigationItemSelectedListener true
         val animIn = if (f > mCurrentFragmentNo) R.anim.mainfragments_in_from_right else R.anim.mainfragments_in_from_left
         val animOut = if (f > mCurrentFragmentNo) R.anim.mainfragments_out_to_left else R.anim.mainfragments_out_to_right
         supportFragmentManager.beginTransaction()

@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import android.widget.EditText
 import de.lulebe.interviewer.CreateQuestionActivity
 import de.lulebe.interviewer.R
-import kotlinx.android.synthetic.main.fragment_createquestion_question.*
 
 
 class CreateQuestionQuestionFragment : Fragment() {
@@ -33,9 +32,6 @@ class CreateQuestionQuestionFragment : Fragment() {
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         changed()
-        radio_answertype.setOnCheckedChangeListener { group, checkedId ->
-
-        }
     }
 
     private fun changed() {

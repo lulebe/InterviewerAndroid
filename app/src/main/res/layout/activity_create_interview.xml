@@ -21,7 +21,6 @@
         app:sv_nextStepLineColor="#5fff"
         app:sv_nextTextColor="#7fff"
         app:sv_doneStepLineColor="#cfff"
-        app:sv_typeface="@font/roboto_condensed_bold"
         app:sv_stepLineWidth="2dp"
         app:sv_selectedStepNumberColor="@color/colorAccent"
         android:elevation="4dp"/>
@@ -49,7 +48,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:fontFamily="@font/roboto_condensed_bold"
+            android:fontFamily="@font/nunito_bold"
             android:text="Next Step"
             android:textColor="@android:color/white"
             android:textSize="18sp" />

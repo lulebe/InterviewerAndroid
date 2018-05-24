@@ -19,7 +19,6 @@
         android:layout_marginBottom="160dp"
         android:text="What should we call this Interview?"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-        android:textColor="@android:color/white"
         android:gravity="center" />
 
     <android.support.design.widget.TextInputLayout
@@ -35,8 +34,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/josefin_slab_semibold"
             android:textSize="24sp"
-            android:textColor="@android:color/white"
-            android:hint="Interview Name"/>
+            android:padding="16dp"/>
     </android.support.design.widget.TextInputLayout>
 
 </android.support.constraint.ConstraintLayout>

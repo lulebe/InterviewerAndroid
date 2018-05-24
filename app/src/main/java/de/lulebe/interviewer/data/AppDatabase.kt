@@ -9,7 +9,8 @@ import android.content.Context
 @Database(entities = [
     Interview::class,
     InterviewUser::class,
-    Notifications::class,
+    Schedule::class,
+    Notification::class,
     Question::class,
     Answer::class,
     AnswerDataText::class,
@@ -20,7 +21,6 @@ abstract class AppDatabase : RoomDatabase() {
 
     abstract fun interviewDao() : InterviewDao
     abstract fun interviewUserDao() : InterviewUserDao
-    abstract fun notificationsDao() : NotificationsDao
     abstract fun questionDao() : QuestionDao
 
     companion object {

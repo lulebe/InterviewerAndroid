@@ -12,9 +12,13 @@ class TypeConverters {
     fun StringtoUUID (string: String) = UUID.fromString(string)
 
     @TypeConverter
-    fun DateToLong (date: Date) = date.time
+    fun CalendarToLong (calendar: Calendar) = calendar.timeInMillis
     @TypeConverter
-    fun LongToDate (long: Long) = Date(long)
+    fun LongToCalendar (long: Long) : Calendar {
+        val cal = Calendar.getInstance()
+        cal.timeInMillis = long
+        return cal
+    }
 
     @TypeConverter
     fun AnswerTypeToInt (answerType: AnswerType) = answerType.ordinal
@@ -32,8 +36,19 @@ class TypeConverters {
     fun IntToColorScheme (int: Int) = ColorScheme.values()[int]
 
     @TypeConverter
-    fun IntListToString (intList: List<Int>) = intList.joinToString(",")
+    fun IntervalTypeToInt (intervalType: IntervalType) = intervalType.ordinal
     @TypeConverter
-    fun StringToIntList (string: String) = string.split(",").map { it.toInt() }
+    fun IntToIntervalType (int: Int) = IntervalType.values()[int]
+
+    @TypeConverter
+    fun IntListToString (intList: List<Int>) : String {
+        if (intList.isEmpty()) return ""
+        return intList.joinToString(",")
+    }
+    @TypeConverter
+    fun StringToIntList (string: String) : List<Int> {
+        if (string.isEmpty()) return emptyList()
+        return string.split(",").map { it.toInt() }
+    }
 
 }
