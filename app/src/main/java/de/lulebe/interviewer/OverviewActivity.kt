@@ -3,16 +3,19 @@ package de.lulebe.interviewer
 import android.arch.lifecycle.Observer
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.app.ActivityOptionsCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.FrameLayout
 import de.lulebe.interviewer.data.AppDatabase
 import de.lulebe.interviewer.data.Interview
 import de.lulebe.interviewer.ui.adapters.InterviewsAdapter
 import de.lulebe.interviewer.ui.helpers.fadeIn
 import kotlinx.android.synthetic.main.activity_overview.*
+import org.jetbrains.anko.contentView
 import org.jetbrains.anko.doAsync
 
 class OverviewActivity : AppCompatActivity() {
@@ -45,6 +48,7 @@ class OverviewActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
+        resetFab()
         loadInterviews()
     }
 
@@ -63,7 +67,21 @@ class OverviewActivity : AppCompatActivity() {
 
     private fun setupViews() {
         fab.setOnClickListener {
-            startActivity(Intent(this, CreateInterviewActivity::class.java))
+            val createInterviewIntent = Intent(this, CreateInterviewActivity::class.java)
+            val options = ActivityOptionsCompat.makeSceneTransitionAnimation(this, fab, "transition_create_interview")
+            iv_fab.animate().setDuration(70).alpha(0F).start()
+            fab.animate().setDuration(70).rotation(0F).start()
+            val scaleFactor = contentView!!.width.toFloat() / fab.width.toFloat()
+            val translationY = contentView!!.height.toFloat() - (fab.layoutParams as FrameLayout.LayoutParams).topMargin - fab.height
+            val translationX = (contentView!!.width.toFloat() - fab.width.toFloat()) / 2F - (fab.layoutParams as FrameLayout.LayoutParams).marginEnd
+            fab.animate()
+                    .setDuration(200).setStartDelay(70)
+                    .scaleX(scaleFactor).scaleY(1.2F).translationY(translationY).translationX(-translationX)
+                    .withEndAction({
+                        startActivity(createInterviewIntent)
+                        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+                    })
+                    .start()
         }
         rv_interviews.adapter = mInterviewsAdapter
         rv_interviews.layoutManager = GridLayoutManager(this, resources.getInteger(R.integer.overview_columns))
@@ -88,5 +106,14 @@ class OverviewActivity : AppCompatActivity() {
         doAsync {
             AppDatabase.getDatabase(applicationContext).interviewDao().deleteInterview(interview)
         }
+    }
+
+    private fun resetFab() {
+        iv_fab.alpha = 1F
+        fab.translationX = 0F
+        fab.translationY = 0F
+        fab.rotation = 45F
+        fab.scaleX = 1F
+        fab.scaleY = 1F
     }
 }

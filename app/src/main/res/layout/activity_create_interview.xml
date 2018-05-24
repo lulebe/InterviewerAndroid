@@ -11,7 +11,7 @@
     <com.shuhart.stepview.StepView
         android:id="@+id/steps"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="96dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:sv_animationType="All"
@@ -42,7 +42,8 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:padding="12dp"
-        android:background="@drawable/bg_buttoncreate_disabled">
+        android:background="@color/colorAccent"
+        android:transitionName="transition_create_interview">
 
         <TextView
             android:layout_width="wrap_content"

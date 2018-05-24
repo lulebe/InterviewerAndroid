@@ -47,7 +47,9 @@ class QuestionsFragment : Fragment() {
 
     private fun initViews(root: View) {
         root.findViewById<View>(R.id.fab_add_question).setOnClickListener {
-            startActivity(Intent(activity, CreateQuestionActivity::class.java))
+            val createQuestionIntent = Intent(activity, CreateQuestionActivity::class.java)
+            createQuestionIntent.putExtra("interviewId", (activity as InterviewActivity).getInterviewId().toString())
+            startActivity(createQuestionIntent)
         }
         val rv = root.findViewById<RecyclerView>(R.id.rv_questions)
         rv.adapter = mQuestionsAdapter

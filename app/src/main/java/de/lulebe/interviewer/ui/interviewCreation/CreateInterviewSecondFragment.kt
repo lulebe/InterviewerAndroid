@@ -14,15 +14,17 @@ import de.lulebe.interviewer.R
 import de.lulebe.interviewer.data.IntervalType
 import de.lulebe.interviewer.ui.views.ChipMultiPickerView
 import kotlinx.android.synthetic.main.fragment_createinterview_second.*
+import java.util.*
 
 class CreateInterviewSecondFragment : Fragment() {
 
     companion object {
         val INTERVALS = listOf("Every X months", "Every X weeks", "Every X days")
         val FIRST_MONTHS = listOf("Jan", "Feb", "Mar", "Apr", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+        val MAX_DATES_IN_MONTHS = listOf(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
         val FIRST_DATES = listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15",
                 "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31")
-        val FIRST_DAYS = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
+        val FIRST_DAYS = listOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -34,8 +36,8 @@ class CreateInterviewSecondFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        changed()
         updateViews()
+        changed()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -49,6 +51,20 @@ class CreateInterviewSecondFragment : Fragment() {
     }
 
     private fun updateViews() {
+        chips_interval.setSelectedItems(listOf((activity as CreateInterviewActivity).schedule.intervalType.ordinal))
+        tv_selected_interval.text = INTERVALS[(activity as CreateInterviewActivity).schedule.intervalType.ordinal]
+        val month = (activity as CreateInterviewActivity).schedule.startDate.get(Calendar.MONTH)
+        chips_first_month.setSelectedItems(listOf(month))
+        chips_first_date.setSelectedItems(listOf((activity as CreateInterviewActivity).schedule.startDate.get(Calendar.DATE)-1))
+        chips_first_date.getSelectedItemIndices().firstOrNull()?.let { selectedDateIndex ->
+            if (selectedDateIndex >= MAX_DATES_IN_MONTHS[month])
+                chips_first_date.setSelectedItems(listOf(MAX_DATES_IN_MONTHS[month]-1))
+        }
+        chips_first_date.items = FIRST_DATES.take(MAX_DATES_IN_MONTHS[month])
+        chips_first_day.setSelectedItems(listOf(
+                (activity as CreateInterviewActivity).schedule.startDate.get(Calendar.DAY_OF_WEEK)-1
+        ))
+        showOccurrencePickersForInterval((activity as CreateInterviewActivity).schedule.intervalType)
     }
 
     private fun initView(root: View, savedInstanceState: Bundle?) {
@@ -57,6 +73,8 @@ class CreateInterviewSecondFragment : Fragment() {
         intervalPicker.selectionChangedListener = {
             tv_selected_interval.text = INTERVALS[it.first()]
             showOccurrencePickersForInterval(IntervalType.values()[it.first()])
+            (activity as CreateInterviewActivity).schedule.intervalType = IntervalType.values()[it.first()]
+            changed()
         }
         val etX = root.findViewById<EditText>(R.id.et_x)
         etX.addTextChangedListener(object : TextWatcher {
@@ -65,23 +83,34 @@ class CreateInterviewSecondFragment : Fragment() {
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 tv_selected_interval.text = INTERVALS[intervalPicker.getSelectedItemIndices().first()]
                         .replace("X", etX.text.toString())
+                (activity as CreateInterviewActivity).schedule.x = etX.text.toString().toInt()
+                changed()
             }
 
         })
         val firstMonthPicker = root.findViewById<ChipMultiPickerView>(R.id.chips_first_month)
-        firstMonthPicker.items = FIRST_MONTHS
-        firstMonthPicker.selectionChangedListener = {
-
-        }
-        val firstDatePicker = root.findViewById<ChipMultiPickerView>(R.id.chips_first_date)
-        firstDatePicker.items = FIRST_DATES
-        firstDatePicker.selectionChangedListener = {
-
-        }
         val firstDayPicker = root.findViewById<ChipMultiPickerView>(R.id.chips_first_day)
+        val firstDatePicker = root.findViewById<ChipMultiPickerView>(R.id.chips_first_date)
+        firstMonthPicker.items = FIRST_MONTHS
+        firstDatePicker.items = FIRST_DATES
         firstDayPicker.items = FIRST_DAYS
+        firstMonthPicker.selectionChangedListener = {
+            (activity as CreateInterviewActivity).schedule.startDate.set(Calendar.MONTH, it.first())
+            firstDatePicker.getSelectedItemIndices().firstOrNull()?.let { selectedDateIndex ->
+                if (selectedDateIndex >= MAX_DATES_IN_MONTHS[it.first()])
+                    firstDatePicker.setSelectedItems(listOf(MAX_DATES_IN_MONTHS[it.first()]-1))
+            }
+            firstDatePicker.items = FIRST_DATES.take(MAX_DATES_IN_MONTHS[it.first()])
+            changed()
+        }
+        firstDatePicker.selectionChangedListener = {
+            (activity as CreateInterviewActivity).schedule.startDate.set(Calendar.DATE, it.first())
+            changed()
+        }
         firstDayPicker.selectionChangedListener = {
-
+            (activity as CreateInterviewActivity).schedule.startDate.timeInMillis = 0
+            (activity as CreateInterviewActivity).schedule.startDate.set(Calendar.DAY_OF_WEEK, it.first()+1)
+            changed()
         }
         savedInstanceState?.let {
             val l1 = root.findViewById<ExpansionLayout>(R.id.layout1)

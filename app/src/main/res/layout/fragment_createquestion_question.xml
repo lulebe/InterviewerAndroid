@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -8,60 +8,68 @@
     android:padding="16dp"
     tools:context="de.lulebe.interviewer.ui.questionCreation.CreateQuestionQuestionFragment">
 
-    <TextView
-        android:id="@+id/tvhint_question"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Ask me:"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <EditText
-        android:id="@+id/et_question"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/tvhint_question"/>
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/tvhint_questiontype"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="Answer Type"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        app:layout_constraintTop_toBottomOf="@id/et_question"/>
+        <TextView
+            android:id="@+id/tvhint_question"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ask me:"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
 
-    <RadioGroup
-        android:id="@+id/radio_answertype"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/tvhint_questiontype"
-        android:layout_marginTop="16dp">
-        <RadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Text"/>
-        <RadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Yes / No"/>
-        <RadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Number"/>
-        <RadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Time"/>
-        <RadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Duration"/>
-        <RadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Pick one of . . ."/>
-    </RadioGroup>
+        <EditText
+            android:id="@+id/et_question"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
-</android.support.constraint.ConstraintLayout>
+        <TextView
+            android:id="@+id/tvhint_questiontype"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="Answer Type"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"/>
+
+        <RadioGroup
+            android:id="@+id/radio_answertype"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp">
+            <RadioButton
+                android:id="@+id/radio_answertype_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Text"/>
+            <RadioButton
+                android:id="@+id/radio_answertype_bool"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Yes / No"/>
+            <RadioButton
+                android:id="@+id/radio_answertype_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Number"/>
+            <RadioButton
+                android:id="@+id/radio_answertype_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Time"/>
+            <RadioButton
+                android:id="@+id/radio_answertype_duration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Duration"/>
+            <RadioButton
+                android:id="@+id/radio_answertype_mc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pick one of . . ."/>
+        </RadioGroup>
+
+    </LinearLayout>
+
+</ScrollView>

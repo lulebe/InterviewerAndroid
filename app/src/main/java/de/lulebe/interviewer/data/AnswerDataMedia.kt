@@ -7,7 +7,7 @@ import java.util.*
 
 @Entity(
         tableName = "answer_data_media",
-        foreignKeys = [(ForeignKey(entity = Answer::class, parentColumns = ["id"], childColumns = ["answerId"]))]
+        foreignKeys = [(ForeignKey(entity = Answer::class, parentColumns = ["id"], childColumns = ["answerId"], onDelete = ForeignKey.CASCADE))]
 )
 data class AnswerDataMedia(
         @PrimaryKey var id: UUID,

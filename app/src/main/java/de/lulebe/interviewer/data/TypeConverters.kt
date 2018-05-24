@@ -41,6 +41,11 @@ class TypeConverters {
     fun IntToIntervalType (int: Int) = IntervalType.values()[int]
 
     @TypeConverter
+    fun QuestionDataNumberSuccessTypeToInt (successType: QuestionDataNumber.SuccessType) = successType.ordinal
+    @TypeConverter
+    fun IntToQuestionDataNumberSuccessType (int: Int) = QuestionDataNumber.SuccessType.values()[int]
+
+    @TypeConverter
     fun IntListToString (intList: List<Int>) : String {
         if (intList.isEmpty()) return ""
         return intList.joinToString(",")

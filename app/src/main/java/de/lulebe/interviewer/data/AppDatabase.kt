@@ -12,6 +12,12 @@ import android.content.Context
     Schedule::class,
     Notification::class,
     Question::class,
+    QuestionDataMC::class,
+    QuestionDataNumber::class,
+    QuestionDataBoolean::class,
+    QuestionDataText::class,
+    QuestionDataTime::class,
+    QuestionDataDuration::class,
     Answer::class,
     AnswerDataText::class,
     AnswerDataMedia::class
@@ -22,6 +28,14 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun interviewDao() : InterviewDao
     abstract fun interviewUserDao() : InterviewUserDao
     abstract fun questionDao() : QuestionDao
+    abstract fun scheduleDao() : ScheduleDao
+    abstract fun notificationDao() : NotificationDao
+    abstract fun questionDataMCDao() : QuestionDataMC.QuestionDataMCDao
+    abstract fun questionDataNumberDao() : QuestionDataNumber.QuestionDataNumberDao
+    abstract fun questionDataTextDao() : QuestionDataText.QuestionDataTextDao
+    abstract fun questionDataTimeDao() : QuestionDataTime.QuestionDataTimeDao
+    abstract fun questionDataDurationDao() : QuestionDataDuration.QuestionDataDurationDao
+    abstract fun questionDataBooleanDao() : QuestionDataBoolean.QuestionDataBooleanDao
 
     companion object {
         private var db : AppDatabase? = null

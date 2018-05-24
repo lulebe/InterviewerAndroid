@@ -10,11 +10,13 @@ import android.view.View
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import de.lulebe.interviewer.data.AnswerType
+import de.lulebe.interviewer.data.AppDatabase
 import de.lulebe.interviewer.data.Question
-import de.lulebe.interviewer.ui.questionCreation.CreateQuestionQuestionFragment
-import de.lulebe.interviewer.ui.questionCreation.CreateQuestionReviewFragment
-import de.lulebe.interviewer.ui.questionCreation.CreateQuestionAnswersMCFragment
+import de.lulebe.interviewer.data.QuestionData
+import de.lulebe.interviewer.ui.questionCreation.*
 import kotlinx.android.synthetic.main.activity_create_question.*
+import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.uiThread
 import java.util.*
 
 class CreateQuestionActivity : AppCompatActivity() {
@@ -24,7 +26,8 @@ class CreateQuestionActivity : AppCompatActivity() {
     }
 
     private var mCurrentFragment = 0
-    val question = Question(UUID.randomUUID(), UUID.randomUUID(),"", AnswerType.BOOLEAN, 0)
+    var question = Question(UUID.randomUUID(), UUID.randomUUID(),"", AnswerType.BOOLEAN, 0)
+    val questionData = mutableListOf<QuestionData>()
     private var _canMoveOn = false
     var canMoveOn: Boolean
         get() = _canMoveOn
@@ -49,22 +52,22 @@ class CreateQuestionActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_question)
-        initViews()
+        initViews(savedInstanceState)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_close_white_24dp)
         supportActionBar?.elevation = 0F
         val out = TypedValue()
         theme.resolveAttribute(android.R.attr.selectableItemBackground, out, true)
         foregroundBtnNext = ResourcesCompat.getDrawable(resources, out.resourceId, theme)
+        question.interviewId = UUID.fromString(intent.extras.getString("interviewId"))
     }
 
-    private fun initViews() {
-        supportFragmentManager
-                .beginTransaction()
-                .add(R.id.container_create_pages, getFragmentNo(0))
-                .commit()
-        tv_btn_next_caption.setText(R.string.createquestion_nextcaption_0)
-        btn_back.visibility = View.GONE
+    private fun initViews(savedInstanceState: Bundle?) {
+        if (savedInstanceState == null)
+            supportFragmentManager
+                    .beginTransaction()
+                    .add(R.id.container_create_pages, getFragmentNo(0))
+                    .commit()
         btn_next.setOnClickListener {
             if (mCurrentFragment < MAX_FRAGMENT_NUMBER && canMoveOn) {
                 mCurrentFragment++
@@ -74,7 +77,8 @@ class CreateQuestionActivity : AppCompatActivity() {
                         .commit()
                 steps.go(mCurrentFragment, true)
                 setupViewsForPage(mCurrentFragment)
-            }
+            } else if (mCurrentFragment == MAX_FRAGMENT_NUMBER && canMoveOn)
+                saveQuestion()
         }
         btn_back.setOnClickListener {
             if (mCurrentFragment > 0) {
@@ -91,7 +95,16 @@ class CreateQuestionActivity : AppCompatActivity() {
 
     private fun getFragmentNo(number: Int) = when (number) {
         0 -> CreateQuestionQuestionFragment()
-        1 -> CreateQuestionAnswersMCFragment()
+        1 -> {
+            when (question.answerType) {
+                AnswerType.TEXT -> CreateQuestionAnswersTextFragment()
+                AnswerType.TIME -> CreateQuestionAnswersTimeFragment()
+                AnswerType.DURATION -> CreateQuestionAnswersDurationFragment()
+                AnswerType.NUMBER -> CreateQuestionAnswersNumberFragment()
+                AnswerType.MC -> CreateQuestionAnswersMCFragment()
+                AnswerType.BOOLEAN -> CreateQuestionAnswersBooleanFragment()
+            }
+        }
         else -> CreateQuestionReviewFragment()
     }
 
@@ -130,6 +143,19 @@ class CreateQuestionActivity : AppCompatActivity() {
             iv_nextbtn.setImageResource(R.drawable.ic_check_whitetransparent_24dp)
         } else {
             iv_nextbtn.setImageResource(R.drawable.ic_chevron_right_whitetransparent_24dp)
+        }
+    }
+
+    private fun saveQuestion() {
+        doAsync {
+            val db = AppDatabase.getDatabase(applicationContext)
+            db.questionDao().createQuestion(question)
+            questionData.forEach {
+                it.insertInto(db)
+            }
+            uiThread {
+                supportFinishAfterTransition()
+            }
         }
     }
 

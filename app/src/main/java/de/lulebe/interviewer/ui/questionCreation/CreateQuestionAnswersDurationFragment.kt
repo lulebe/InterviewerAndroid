@@ -10,7 +10,7 @@ import de.lulebe.interviewer.CreateQuestionActivity
 import de.lulebe.interviewer.R
 
 
-class CreateQuestionAnswersMCFragment : Fragment() {
+class CreateQuestionAnswersDurationFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val rootView = inflater.inflate(R.layout.fragment_questions, container, false)

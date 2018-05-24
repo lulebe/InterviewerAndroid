@@ -8,7 +8,7 @@ import java.util.*
 
 @Entity(
         tableName = "notifications",
-        foreignKeys = [(ForeignKey(entity = Interview::class, parentColumns = ["id"], childColumns = ["interviewId"]))]
+        foreignKeys = [(ForeignKey(entity = Interview::class, parentColumns = ["id"], childColumns = ["interviewId"], onDelete = ForeignKey.CASCADE))]
 )
 data class Notification(
         @PrimaryKey val id: UUID,

@@ -19,14 +19,14 @@ import org.jetbrains.anko.collections.forEachWithIndex
 class ChipMultiPickerView : View {
 
     private var _mFullWidthChips = false
-    var mFullWidthChips: Boolean
+    var fullWidthChips: Boolean
         get() = _mFullWidthChips
         set(value) {
             _mFullWidthChips = value
             requestLayout()
         }
     private var _mAllowMultiSelect = false
-    var mAllowMultiSelect: Boolean
+    var allowMultiSelect: Boolean
         get() = _mAllowMultiSelect
         set(value) {
             _mAllowMultiSelect = value
@@ -36,8 +36,8 @@ class ChipMultiPickerView : View {
     constructor(context: Context, attributeSet: AttributeSet) : super(context, attributeSet) {
         val attrs = context.theme.obtainStyledAttributes(attributeSet, R.styleable.ChipMultiPickerView, 0, 0)
         try {
-            mFullWidthChips = attrs.getBoolean(R.styleable.ChipMultiPickerView_fullWidthChips, false)
-            mAllowMultiSelect = attrs.getBoolean(R.styleable.ChipMultiPickerView_allowMultiSelect, false)
+            fullWidthChips = attrs.getBoolean(R.styleable.ChipMultiPickerView_fullWidthChips, false)
+            allowMultiSelect = attrs.getBoolean(R.styleable.ChipMultiPickerView_allowMultiSelect, false)
         } finally {
             attrs.recycle()
         }
@@ -93,7 +93,7 @@ class ChipMultiPickerView : View {
 
     fun setSelectedItems (selected: List<Int>) {
         selectedItemIndices.clear()
-        if (mAllowMultiSelect)
+        if (allowMultiSelect)
             selectedItemIndices.addAll(selected)
         else
             selected.firstOrNull()?.let { selectedItemIndices.add(it) }
@@ -105,7 +105,7 @@ class ChipMultiPickerView : View {
         val widthMeasure = MeasureSpec.getSize(widthMeasureSpec)
         calculateTextDimensions()
         val heightMeasure : Int
-        if (!mFullWidthChips) {
+        if (!fullWidthChips) {
             mBlockHeight = mTextHeight + (2 * mBlockPaint.strokeWidth) + (2 * BLOCK_PADDING)
             mBlockWidth = mTextWidth + (2 * mBlockPaint.strokeWidth) + (2 * BLOCK_PADDING)
             if (mBlockWidth < mBlockHeight)
@@ -231,7 +231,7 @@ class ChipMultiPickerView : View {
     }
 
     private fun clickedIndex (index: Int) {
-        if (mAllowMultiSelect) {
+        if (allowMultiSelect) {
             if (selectedItemIndices.contains(index))
                 selectedItemIndices.remove(index)
             else

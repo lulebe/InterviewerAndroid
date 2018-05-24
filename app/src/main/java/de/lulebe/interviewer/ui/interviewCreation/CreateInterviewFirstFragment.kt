@@ -30,8 +30,8 @@ class CreateInterviewFirstFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        changed()
         updateViews()
+        changed()
     }
 
     private fun changed() {

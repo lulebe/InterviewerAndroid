@@ -2,5 +2,5 @@ package de.lulebe.interviewer.data
 
 
 enum class AnswerType {
-    TEXT, BOOLEAN, NUMBER, TIME
+    TEXT, BOOLEAN, NUMBER, TIME, DURATION, MC
 }

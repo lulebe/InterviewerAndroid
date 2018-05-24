@@ -1,19 +1,20 @@
 package de.lulebe.interviewer.ui.questionCreation
 
 import android.support.v4.app.Fragment
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import de.lulebe.interviewer.CreateQuestionActivity
 import de.lulebe.interviewer.R
+import de.lulebe.interviewer.data.QuestionDataText
+import java.util.*
 
 
-class CreateQuestionAnswersMCFragment : Fragment() {
+class CreateQuestionAnswersTextFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        val rootView = inflater.inflate(R.layout.fragment_questions, container, false)
+        val rootView = inflater.inflate(R.layout.fragment_createquestion_answers_text, container, false)
         return rootView
     }
 
@@ -25,6 +26,11 @@ class CreateQuestionAnswersMCFragment : Fragment() {
 
     private fun changed() {
         val act = (activity as CreateQuestionActivity)
+        if (act.questionData.isEmpty())
+            act.questionData.add(QuestionDataText(
+                    UUID.randomUUID(),
+                    act.question.id
+            ))
         act.canMoveOn = true
     }
 

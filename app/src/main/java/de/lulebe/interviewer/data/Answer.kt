@@ -8,13 +8,13 @@ import java.util.*
 
 @Entity(
         tableName = "answers",
-        foreignKeys = [ForeignKey(entity = Question::class, parentColumns = ["id"], childColumns = ["questionId"])]
+        foreignKeys = [ForeignKey(entity = Question::class, parentColumns = ["id"], childColumns = ["questionId"], onDelete = ForeignKey.CASCADE)]
 )
 data class Answer (
         @PrimaryKey var id: UUID,
         var questionId: UUID,
-        var createdAt: Date,
-        var validSince: Date,
-        var validUntil: Date,
+        var createdAt: Calendar,
+        var validSince: Calendar,
+        var validUntil: Calendar,
         var success: Boolean?
 )

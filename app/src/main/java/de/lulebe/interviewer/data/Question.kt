@@ -7,7 +7,7 @@ import java.util.*
 
 @Entity(
         tableName = "questions",
-        foreignKeys = [(ForeignKey(entity = Interview::class, parentColumns = ["id"], childColumns = ["interviewId"]))]
+        foreignKeys = [(ForeignKey(entity = Interview::class, parentColumns = ["id"], childColumns = ["interviewId"], onDelete = ForeignKey.CASCADE))]
 )
 data class Question (
         @PrimaryKey val id: UUID,

@@ -12,10 +12,12 @@ import android.view.MenuItem
 import android.view.View
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
+import android.widget.Toast
 import de.lulebe.interviewer.data.*
 import de.lulebe.interviewer.helpers.bundleToList
 import de.lulebe.interviewer.helpers.listToBundle
 import de.lulebe.interviewer.ui.interviewCreation.CreateInterviewFirstFragment
+import de.lulebe.interviewer.ui.interviewCreation.CreateInterviewFourthFragment
 import de.lulebe.interviewer.ui.interviewCreation.CreateInterviewSecondFragment
 import de.lulebe.interviewer.ui.interviewCreation.CreateInterviewThirdFragment
 
@@ -40,14 +42,14 @@ class CreateInterviewActivity : AppCompatActivity() {
         set(value) {
             _canMoveOn = value
             if (value) {
-                btn_next.setBackgroundResource(R.drawable.bg_buttoncreate_enabled)
+                //btn_next.setBackgroundResource(R.drawable.bg_buttoncreate_enabled)
                 btn_next.foreground = foregroundBtnNext
                 if (mCurrentFragment < MAX_FRAGMENT_NUMBER)
                     iv_nextbtn.setImageResource(R.drawable.ic_chevron_right_whitetransparent_24dp)
                 else
                     iv_nextbtn.setImageResource(R.drawable.ic_check_whitetransparent_24dp)
             } else {
-                btn_next.setBackgroundResource(R.drawable.bg_buttoncreate_disabled)
+                //btn_next.setBackgroundResource(R.drawable.bg_buttoncreate_disabled)
                 btn_next.foreground = null
                 iv_nextbtn.setImageResource(R.drawable.ic_warning_red_24dp)
             }
@@ -125,7 +127,7 @@ class CreateInterviewActivity : AppCompatActivity() {
         0 -> CreateInterviewFirstFragment()
         1 -> CreateInterviewSecondFragment()
         2 -> CreateInterviewThirdFragment()
-        else -> CreateInterviewThirdFragment()
+        else -> CreateInterviewFourthFragment()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -179,6 +181,8 @@ class CreateInterviewActivity : AppCompatActivity() {
                     interview.id,
                     true
             ))
+            db.scheduleDao().createSchedule(schedule)
+            db.notificationDao().createNotification(notification)
             uiThread {
                 val interviewIntent = Intent(this@CreateInterviewActivity, InterviewActivity::class.java)
                 interviewIntent.putExtra("interviewId", interview.id.toString())
