@@ -4,22 +4,19 @@ import android.arch.persistence.room.*
 import java.util.*
 
 @Entity(
-        tableName = "question_data_mc",
+        tableName = "question_data_media",
         foreignKeys = [(ForeignKey(entity = Question::class, parentColumns = ["id"], childColumns = ["questionId"], onDelete = ForeignKey.CASCADE))]
 )
-data class QuestionDataMC (
+data class QuestionDataMedia (
         @PrimaryKey var id: UUID,
-        var questionId: UUID,
-        var option: String,
-        var success: Boolean,
-        var allowMultiSelect: Boolean
+        var questionId: UUID
 ) : QuestionData {
     override fun insertInto(db: AppDatabase) {
-        db.questionDataMCDao().createQuestionDataMC(this)
+        db.questionDataMediaDao().createQuestionDataMedia(this)
     }
     @Dao
-    interface QuestionDataMCDao {
+    interface QuestionDataMediaDao {
         @Insert
-        fun createQuestionDataMC(questionDataMC: QuestionDataMC)
+        fun createQuestionDataMedia(questionDataMedia: QuestionDataMedia)
     }
 }

@@ -16,5 +16,5 @@ data class Answer (
         var createdAt: Calendar,
         var validSince: Calendar,
         var validUntil: Calendar,
-        var success: Boolean?
+        var success: Boolean
 )

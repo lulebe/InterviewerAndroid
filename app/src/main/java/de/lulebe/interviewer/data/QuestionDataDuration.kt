@@ -9,8 +9,15 @@ import java.util.*
 )
 data class QuestionDataDuration (
         @PrimaryKey var id: UUID,
-        var questionId: UUID
+        var questionId: UUID,
+        var successDuration: Int,
+        var successType: SuccessType
 ) : QuestionData {
+
+    enum class SuccessType {
+        gt, lt, eq
+    }
+
     override fun insertInto(db: AppDatabase) {
         db.questionDataDurationDao().createQuestionDataDuration(this)
     }

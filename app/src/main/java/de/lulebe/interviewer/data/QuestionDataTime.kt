@@ -9,8 +9,14 @@ import java.util.*
 )
 data class QuestionDataTime (
         @PrimaryKey var id: UUID,
-        var questionId: UUID
+        var questionId: UUID,
+        val successTime: Calendar,
+        val successType: SuccessType
 ) : QuestionData {
+
+    enum class SuccessType {
+        before, after, at
+    }
 
     override fun insertInto(db: AppDatabase) {
         db.questionDataTimeDao().createQuestionDataTime(this)

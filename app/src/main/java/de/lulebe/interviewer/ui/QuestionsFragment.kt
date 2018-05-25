@@ -15,21 +15,25 @@ import de.lulebe.interviewer.CreateQuestionActivity
 import de.lulebe.interviewer.InterviewActivity
 
 import de.lulebe.interviewer.R
+import de.lulebe.interviewer.SingleAnswerActivity
 import de.lulebe.interviewer.data.AppDatabase
 import de.lulebe.interviewer.data.Question
 import de.lulebe.interviewer.ui.adapters.QuestionsAdapter
 import de.lulebe.interviewer.ui.helpers.fadeIn
 import kotlinx.android.synthetic.main.fragment_questions.*
+import org.jetbrains.anko.doAsync
 
 
 class QuestionsFragment : Fragment() {
 
     private val mQuestionsAdapter = QuestionsAdapter({
-        Toast.makeText(context, "click question: ${it.question}", Toast.LENGTH_SHORT).show()
+        answerQuestion(it)
     }, {
-        Toast.makeText(context, "edit question: ${it.question}", Toast.LENGTH_SHORT).show()
+        showAnswers(it)
     }, {
-        Toast.makeText(context, "delete question: ${it.question}", Toast.LENGTH_SHORT).show()
+        editQuestion(it)
+    }, {
+        deleteQuestion(it)
     })
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -71,6 +75,34 @@ class QuestionsFragment : Fragment() {
                         l_empty.visibility = View.GONE
                     }
                 })
+            }
+        }
+    }
+
+    private fun answerQuestion(question: Question) {
+        val answerInputIntent = Intent(context, SingleAnswerActivity::class.java)
+        answerInputIntent.putExtra("interviewId", (activity as InterviewActivity).getInterviewId().toString())
+        answerInputIntent.putExtra("questionId", question.id.toString())
+        startActivity(answerInputIntent)
+    }
+
+    private fun showAnswers(question: Question) {
+        /*
+        val answersIntent = Intent(context, QuestionActivity::class.java)
+        answersIntent.putExtra("questionId", question.id.toString())
+        answersIntent.putExtra("page", QuestionActivity.PAGE_ANSWERS)
+        startActivity(answersIntent)
+        */
+    }
+
+    private fun editQuestion(question: Question) {
+        Toast.makeText(context, "edit question: ${question.question}", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun deleteQuestion(question: Question) {
+        doAsync {
+            context?.applicationContext?.let { appCtx ->
+                AppDatabase.getDatabase(appCtx).questionDao().deleteQuestion(question)
             }
         }
     }

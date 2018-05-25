@@ -46,6 +46,8 @@ class ChipMultiPickerView : View {
     private val selectedItemIndices = mutableListOf<Int>()
     var selectionChangedListener: ((List<Int>) -> Unit)? = null
 
+    private var mDownOn: Int? = null
+
     private var _items = emptyList<String>()
     var items: List<String>
         get() = _items
@@ -177,11 +179,16 @@ class ChipMultiPickerView : View {
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
-        if (event != null && event.action == MotionEvent.ACTION_DOWN)
+        if (event != null && event.action == MotionEvent.ACTION_DOWN) {
+            mDownOn = getClickedChipIndex(event.x, event.y)
             return true
-        if (event != null && event.action == MotionEvent.ACTION_UP) {
+        } else if (event != null && event.action == MotionEvent.ACTION_CANCEL) {
+            mDownOn = null
+        } else if (event != null && event.action == MotionEvent.ACTION_UP && mDownOn != null) {
             val clickedIndex = getClickedChipIndex(event.x, event.y) ?: return true
-            clickedIndex(clickedIndex)
+            if (clickedIndex == mDownOn)
+                clickedIndex(clickedIndex)
+            mDownOn = null
         }
         return super.onTouchEvent(event)
     }

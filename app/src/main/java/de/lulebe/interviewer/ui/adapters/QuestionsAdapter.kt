@@ -12,6 +12,7 @@ import de.lulebe.interviewer.ui.views.CutCornersCardView
 
 class QuestionsAdapter(
     val clickCb: (Question) -> Unit,
+    val answersCb: (Question) -> Unit,
     val editCb: (Question) -> Unit,
     val deleteCb: (Question) -> Unit
 ) : RecyclerView.Adapter<QuestionsAdapter.ViewHolder>() {
@@ -59,6 +60,9 @@ class QuestionsAdapter(
                     else
                         clickCb(it)
                 }
+            }
+            itemView.findViewById<View>(R.id.btn_answers).setOnClickListener {
+                questions?.get(adapterPosition)?.let { answersCb(it) }
             }
             itemView.findViewById<View>(R.id.btn_edit).setOnClickListener {
                 questions?.get(adapterPosition)?.let { editCb(it) }

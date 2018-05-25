@@ -46,6 +46,16 @@ class TypeConverters {
     fun IntToQuestionDataNumberSuccessType (int: Int) = QuestionDataNumber.SuccessType.values()[int]
 
     @TypeConverter
+    fun QuestionDataTimeSuccessTypeToInt (successType: QuestionDataTime.SuccessType) = successType.ordinal
+    @TypeConverter
+    fun IntToQuestionDataTimeSuccessType (int: Int) = QuestionDataTime.SuccessType.values()[int]
+
+    @TypeConverter
+    fun QuestionDataDurationSuccessTypeToInt (successType: QuestionDataDuration.SuccessType) = successType.ordinal
+    @TypeConverter
+    fun IntToQuestionDataDurationSuccessType (int: Int) = QuestionDataDuration.SuccessType.values()[int]
+
+    @TypeConverter
     fun IntListToString (intList: List<Int>) : String {
         if (intList.isEmpty()) return ""
         return intList.joinToString(",")

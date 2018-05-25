@@ -16,7 +16,7 @@
         <activity
             android:name=".CreateQuestionActivity"
             android:label="@string/title_createquestion"
-            android:windowSoftInputMode="stateHidden" />
+            android:parentActivityName=".InterviewActivity" />
 
         <meta-data
             android:name="preloaded_fonts"
@@ -35,13 +35,10 @@
         <activity
             android:name=".CreateInterviewActivity"
             android:label="@string/title_activity_create_interview"
-            android:parentActivityName=".OverviewActivity"
-            android:windowSoftInputMode="stateHidden">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="de.lulebe.interviewer.OverviewActivity" />
-        </activity>
-        <activity android:name=".SettingsActivity"></activity>
+            android:parentActivityName=".OverviewActivity" />
+        <activity android:name=".SettingsActivity" />
+        <activity android:name=".SingleAnswerActivity"
+            android:parentActivityName=".InterviewActivity"/>
     </application>
 
 </manifest>

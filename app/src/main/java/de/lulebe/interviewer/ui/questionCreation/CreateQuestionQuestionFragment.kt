@@ -13,6 +13,7 @@ import android.widget.RadioGroup
 import de.lulebe.interviewer.CreateQuestionActivity
 import de.lulebe.interviewer.R
 import de.lulebe.interviewer.data.AnswerType
+import de.lulebe.interviewer.ui.views.ChipMultiPickerView
 import kotlinx.android.synthetic.main.fragment_createquestion_question.*
 
 
@@ -20,23 +21,7 @@ class CreateQuestionQuestionFragment : Fragment() {
 
     companion object {
 
-        private val radioIds = mapOf(
-                Pair(R.id.radio_answertype_text, AnswerType.TEXT),
-                Pair(R.id.radio_answertype_bool, AnswerType.BOOLEAN),
-                Pair(R.id.radio_answertype_number, AnswerType.NUMBER),
-                Pair(R.id.radio_answertype_time, AnswerType.TIME),
-                Pair(R.id.radio_answertype_duration, AnswerType.DURATION),
-                Pair(R.id.radio_answertype_mc, AnswerType.MC)
-        )
-
-        private val answerTypes = mapOf(
-                Pair(AnswerType.TEXT, R.id.radio_answertype_text),
-                Pair(AnswerType.BOOLEAN, R.id.radio_answertype_bool),
-                Pair(AnswerType.NUMBER, R.id.radio_answertype_number),
-                Pair(AnswerType.TIME, R.id.radio_answertype_time),
-                Pair(AnswerType.DURATION, R.id.radio_answertype_duration),
-                Pair(AnswerType.MC, R.id.radio_answertype_mc)
-        )
+        private val ANSWER_TYPES = listOf("Text", "Yes / No", "Number", "Time", "Duration", "Multiple choice", "Media")
 
     }
 
@@ -61,9 +46,7 @@ class CreateQuestionQuestionFragment : Fragment() {
     private fun updateViews() {
         val act = (activity as CreateQuestionActivity)
         et_question.setText(act.question.question)
-        answerTypes[act.question.answerType]?.let {
-            radio_answertype.check(it)
-        }
+        chips_answertype.setSelectedItems(listOf(act.question.answerType.ordinal))
     }
 
     private fun initViews(root: View) {
@@ -75,12 +58,12 @@ class CreateQuestionQuestionFragment : Fragment() {
                 changed()
             }
         })
-        root.findViewById<RadioGroup>(R.id.radio_answertype).setOnCheckedChangeListener { radioGroup, i ->
-            radioIds[i]?.let {
-                (activity as CreateQuestionActivity).question.answerType = it
-                (activity as CreateQuestionActivity).questionData.clear()
-                changed()
-            }
+        val chipsAnswertype = root.findViewById<ChipMultiPickerView>(R.id.chips_answertype)
+        chipsAnswertype.items = ANSWER_TYPES
+        chipsAnswertype.selectionChangedListener = {
+            (activity as CreateQuestionActivity).question.answerType = AnswerType.values()[it.first()]
+            (activity as CreateQuestionActivity).questionData.clear()
+            changed()
         }
     }
 

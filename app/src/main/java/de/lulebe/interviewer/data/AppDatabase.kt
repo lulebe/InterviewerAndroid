@@ -18,6 +18,7 @@ import android.content.Context
     QuestionDataText::class,
     QuestionDataTime::class,
     QuestionDataDuration::class,
+    QuestionDataMedia::class,
     Answer::class,
     AnswerDataText::class,
     AnswerDataMedia::class
@@ -28,6 +29,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun interviewDao() : InterviewDao
     abstract fun interviewUserDao() : InterviewUserDao
     abstract fun questionDao() : QuestionDao
+    abstract fun answerDao() : AnswerDao
     abstract fun scheduleDao() : ScheduleDao
     abstract fun notificationDao() : NotificationDao
     abstract fun questionDataMCDao() : QuestionDataMC.QuestionDataMCDao
@@ -36,6 +38,8 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun questionDataTimeDao() : QuestionDataTime.QuestionDataTimeDao
     abstract fun questionDataDurationDao() : QuestionDataDuration.QuestionDataDurationDao
     abstract fun questionDataBooleanDao() : QuestionDataBoolean.QuestionDataBooleanDao
+    abstract fun questionDataMediaDao() : QuestionDataMedia.QuestionDataMediaDao
+    abstract fun anwserDataTextDao() : AnswerDataTextDao
 
     companion object {
         private var db : AppDatabase? = null

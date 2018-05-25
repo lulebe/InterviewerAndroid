@@ -34,7 +34,7 @@ class CreateInterviewActivity : AppCompatActivity() {
 
     private var mCurrentFragment = 0
     var interview = Interview(UUID.randomUUID(), "", ColorScheme.BUSINESS)
-    var schedule = Schedule.createDefaultDaily(interview.id)
+    var schedule = Schedule(UUID.randomUUID(), interview.id, IntervalType.DAY)
     var notification = Notification(UUID.randomUUID(), interview.id, 0, 20, 0)
     private var _canMoveOn = false
     var canMoveOn: Boolean
@@ -79,13 +79,20 @@ class CreateInterviewActivity : AppCompatActivity() {
         super.onSaveInstanceState(outState)
     }
 
+    override fun onBackPressed() {
+        if (mCurrentFragment > 0)
+            goBack()
+        else
+            super.onBackPressed()
+    }
+
     private fun initViews(savedInstanceState: Bundle?) {
         if (savedInstanceState == null) {
             supportFragmentManager
                     .beginTransaction()
                     .add(R.id.container_create_pages, getFragmentNo(0))
                     .commit()
-            tv_btn_next_caption.setText(R.string.createquestion_nextcaption_0)
+            tv_btn_next_caption.setText(R.string.createinterview_nextcaption_0)
             btn_back.visibility = View.GONE
         } else {
             interview = Interview.fromBundle(savedInstanceState.getBundle("interview"))
@@ -111,16 +118,20 @@ class CreateInterviewActivity : AppCompatActivity() {
         }
         btn_back.setOnClickListener {
             if (mCurrentFragment > 0) {
-                mCurrentFragment--
-                supportFragmentManager
-                        .beginTransaction()
-                        .setCustomAnimations(R.anim.mainfragments_in_from_left, R.anim.mainfragments_out_to_right)
-                        .replace(R.id.container_create_pages, getFragmentNo(mCurrentFragment))
-                        .commit()
-                steps.go(mCurrentFragment, true)
-                setupViewsForPage(mCurrentFragment)
+                goBack()
             }
         }
+    }
+
+    private fun goBack() {
+        mCurrentFragment--
+        supportFragmentManager
+                .beginTransaction()
+                .setCustomAnimations(R.anim.mainfragments_in_from_left, R.anim.mainfragments_out_to_right)
+                .replace(R.id.container_create_pages, getFragmentNo(mCurrentFragment))
+                .commit()
+        steps.go(mCurrentFragment, true)
+        setupViewsForPage(mCurrentFragment)
     }
 
     private fun getFragmentNo(number: Int) : Fragment = when (number) {

@@ -62,12 +62,22 @@ class CreateQuestionActivity : AppCompatActivity() {
         question.interviewId = UUID.fromString(intent.extras.getString("interviewId"))
     }
 
+    override fun onBackPressed() {
+        if (mCurrentFragment > 0)
+            goBack()
+        else
+            super.onBackPressed()
+    }
+
     private fun initViews(savedInstanceState: Bundle?) {
-        if (savedInstanceState == null)
+        if (savedInstanceState == null) {
             supportFragmentManager
                     .beginTransaction()
                     .add(R.id.container_create_pages, getFragmentNo(0))
                     .commit()
+            tv_btn_next_caption.setText(R.string.createquestion_nextcaption_0)
+            btn_back.visibility = View.GONE
+        }
         btn_next.setOnClickListener {
             if (mCurrentFragment < MAX_FRAGMENT_NUMBER && canMoveOn) {
                 mCurrentFragment++
@@ -82,15 +92,19 @@ class CreateQuestionActivity : AppCompatActivity() {
         }
         btn_back.setOnClickListener {
             if (mCurrentFragment > 0) {
-                mCurrentFragment--
-                supportFragmentManager
-                        .beginTransaction()
-                        .replace(R.id.container_create_pages, getFragmentNo(mCurrentFragment))
-                        .commit()
-                steps.go(mCurrentFragment, true)
-                setupViewsForPage(mCurrentFragment)
+                goBack()
             }
         }
+    }
+
+    private fun goBack() {
+        mCurrentFragment--
+        supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.container_create_pages, getFragmentNo(mCurrentFragment))
+                .commit()
+        steps.go(mCurrentFragment, true)
+        setupViewsForPage(mCurrentFragment)
     }
 
     private fun getFragmentNo(number: Int) = when (number) {
@@ -103,6 +117,7 @@ class CreateQuestionActivity : AppCompatActivity() {
                 AnswerType.NUMBER -> CreateQuestionAnswersNumberFragment()
                 AnswerType.MC -> CreateQuestionAnswersMCFragment()
                 AnswerType.BOOLEAN -> CreateQuestionAnswersBooleanFragment()
+                AnswerType.MEDIA -> CreateQuestionAnswersMediaFragment()
             }
         }
         else -> CreateQuestionReviewFragment()

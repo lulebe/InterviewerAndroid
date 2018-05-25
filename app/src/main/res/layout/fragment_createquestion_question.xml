@@ -33,42 +33,11 @@
             android:text="Answer Type"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"/>
 
-        <RadioGroup
-            android:id="@+id/radio_answertype"
-            android:layout_width="wrap_content"
+        <de.lulebe.interviewer.ui.views.ChipMultiPickerView
+            android:id="@+id/chips_answertype"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp">
-            <RadioButton
-                android:id="@+id/radio_answertype_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Text"/>
-            <RadioButton
-                android:id="@+id/radio_answertype_bool"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Yes / No"/>
-            <RadioButton
-                android:id="@+id/radio_answertype_number"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Number"/>
-            <RadioButton
-                android:id="@+id/radio_answertype_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Time"/>
-            <RadioButton
-                android:id="@+id/radio_answertype_duration"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Duration"/>
-            <RadioButton
-                android:id="@+id/radio_answertype_mc"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Pick one of . . ."/>
-        </RadioGroup>
+            app:fullWidthChips="true"/>
 
     </LinearLayout>
 
