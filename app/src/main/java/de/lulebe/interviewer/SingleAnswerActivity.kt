@@ -1,12 +1,14 @@
 package de.lulebe.interviewer
 
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import de.lulebe.interviewer.data.AnswerType
 import de.lulebe.interviewer.data.AppDatabase
 import de.lulebe.interviewer.ui.answerInput.AnswerFragment
+import de.lulebe.interviewer.ui.answerInput.BooleanAnswerFragment
 import de.lulebe.interviewer.ui.answerInput.TextAnswerFragment
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
@@ -19,7 +21,7 @@ class SingleAnswerActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_single_answer)
-        initFragment()
+        initFragment(savedInstanceState)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -40,25 +42,29 @@ class SingleAnswerActivity : AppCompatActivity() {
         else -> super.onOptionsItemSelected(item)
     }
 
-    private fun initFragment() {
+    private fun initFragment(savedInstanceState: Bundle?) {
         val interviewId = UUID.fromString(intent.getStringExtra("interviewId"))
         val questionId = UUID.fromString(intent.getStringExtra("questionId"))
         doAsync {
             val db = AppDatabase.getDatabase(applicationContext)
             val question = db.questionDao().getQuestionById(questionId)
             uiThread {
-                val fragment = getFragmentForType(question.answerType)
-                shownFragment = fragment
-                supportFragmentManager.beginTransaction()
-                        .add(R.id.container, fragment)
-                        .commit()
+                val fragment : Fragment
+                if (savedInstanceState == null) {
+                    fragment = getFragmentForType(question.answerType)
+                    supportFragmentManager.beginTransaction()
+                            .add(R.id.container, fragment)
+                            .commit()
+                } else
+                    fragment = supportFragmentManager.findFragmentById(R.id.container)
+                shownFragment = fragment as AnswerFragment
                 fragment.setArgs(questionId, interviewId, null)
             }
         }
     }
 
     private fun getFragmentForType(answerType: AnswerType) = when (answerType) {
-        AnswerType.TEXT -> TextAnswerFragment()
+        AnswerType.BOOLEAN -> BooleanAnswerFragment()
         else -> TextAnswerFragment()
-    }
+    } as Fragment
 }

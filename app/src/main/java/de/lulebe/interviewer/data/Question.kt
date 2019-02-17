@@ -15,4 +15,8 @@ data class Question (
         var question: String,
         var answerType: AnswerType,
         var order: Int
-)
+) {
+    fun getAnswersWithData(db: AppDatabase) : List<AnswerWithData> {
+        return db.answerDataTextDao().getAnswersForQuestion(this.id)
+    }
+}

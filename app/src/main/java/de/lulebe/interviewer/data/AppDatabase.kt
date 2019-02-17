@@ -21,7 +21,8 @@ import android.content.Context
     QuestionDataMedia::class,
     Answer::class,
     AnswerDataText::class,
-    AnswerDataMedia::class
+    AnswerDataMedia::class,
+    AnswerDataBoolean::class
 ], version = 1)
 @TypeConverters(de.lulebe.interviewer.data.TypeConverters::class)
 abstract class AppDatabase : RoomDatabase() {
@@ -39,7 +40,8 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun questionDataDurationDao() : QuestionDataDuration.QuestionDataDurationDao
     abstract fun questionDataBooleanDao() : QuestionDataBoolean.QuestionDataBooleanDao
     abstract fun questionDataMediaDao() : QuestionDataMedia.QuestionDataMediaDao
-    abstract fun anwserDataTextDao() : AnswerDataTextDao
+    abstract fun answerDataTextDao() : AnswerDataText.AnswerDataTextDao
+    abstract fun answerDataBooleanDao() : AnswerDataBoolean.AnswerDataBooleanDao
 
     companion object {
         private var db : AppDatabase? = null

@@ -9,22 +9,23 @@ import android.view.View
 import android.view.ViewGroup
 import de.lulebe.interviewer.R
 import de.lulebe.interviewer.data.*
-import kotlinx.android.synthetic.main.fragment_answerinput_text.*
+import kotlinx.android.synthetic.main.fragment_answerinput_boolean.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import java.util.*
 
-class TextAnswerFragment : Fragment(), AnswerFragment {
+class BooleanAnswerFragment : Fragment(), AnswerFragment {
 
     private var answer: Answer? = null
-    private var answerData: AnswerDataText? = null
+    private var answerData: AnswerDataBoolean? = null
     private var answerIsNew = false
     private var mQuestionId = UUID.randomUUID()
     private var mInterviewId = UUID.randomUUID()
     private var mTime = Calendar.getInstance()
+    private var mQuestionData: QuestionDataBoolean? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_answerinput_text, container, false)
+        return inflater.inflate(R.layout.fragment_answerinput_boolean, container, false)
     }
 
     override fun onStart() {
@@ -42,17 +43,17 @@ class TextAnswerFragment : Fragment(), AnswerFragment {
         val ans = answer!!
         val ansIsNew = answerIsNew
         val ansData = answerData!!
-        ansData.data = et_answer.text.toString()
-        ans.success = cb_isSuccess.isChecked
+        ansData.data = cb_answer.isChecked
+        ans.success = cb_answer.isChecked == mQuestionData?.successValue
         doAsync {
             context?.applicationContext?.let { appCtx ->
                 val db = AppDatabase.getDatabase(appCtx)
                 if (ansIsNew) {
                     db.answerDao().createAnswer(ans)
-                    db.answerDataTextDao().createAnswerDataText(ansData)
+                    db.answerDataBooleanDao().createAnswerDataBoolean(ansData)
                 } else {
                     db.answerDao().updateAnswer(ans)
-                    db.answerDataTextDao().updateAnswerDataText(ansData)
+                    db.answerDataBooleanDao().updateAnswerDataBoolean(ansData)
                 }
             }
         }
@@ -66,6 +67,7 @@ class TextAnswerFragment : Fragment(), AnswerFragment {
             val schedule = db.scheduleDao().getScheduleForInterview(mInterviewId)
             answer = db.answerDao().getAnswerForQuestionAtTime(question.id, mTime) ?: generateAnswer(question, schedule)
             answerData = getDataForAnswer(db, answer!!)
+            mQuestionData = db.questionDataBooleanDao().getQuestionDataForQuestion(mQuestionId)
             uiThread {
                 initViews()
             }
@@ -86,20 +88,19 @@ class TextAnswerFragment : Fragment(), AnswerFragment {
         )
     }
 
-    private fun getDataForAnswer(db: AppDatabase, answer: Answer) : AnswerDataText {
-        var answerData = db.answerDataTextDao().getDataForAnswer(answer.id)
+    private fun getDataForAnswer(db: AppDatabase, answer: Answer) : AnswerDataBoolean {
+        var answerData = db.answerDataBooleanDao().getDataForAnswer(answer.id)
         if (answerData == null)
-            answerData = AnswerDataText(
+            answerData = AnswerDataBoolean(
                     UUID.randomUUID(),
                     answer.id,
-                    ""
+                    true
             )
         return answerData
     }
 
     private fun initViews() {
-        et_answer.setText(answerData!!.data)
-        cb_isSuccess.isChecked = answer!!.success ?: false
+        cb_answer.isChecked = answerData?.data ?: false
     }
 
 }

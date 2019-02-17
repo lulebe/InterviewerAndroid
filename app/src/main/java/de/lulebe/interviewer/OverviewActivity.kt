@@ -12,6 +12,8 @@ import android.view.View
 import android.widget.FrameLayout
 import de.lulebe.interviewer.data.AppDatabase
 import de.lulebe.interviewer.data.Interview
+import de.lulebe.interviewer.data.media.getTotalStorage
+import de.lulebe.interviewer.data.media.getUsedStorage
 import de.lulebe.interviewer.ui.adapters.InterviewsAdapter
 import de.lulebe.interviewer.ui.helpers.fadeIn
 import kotlinx.android.synthetic.main.activity_overview.*
@@ -68,7 +70,6 @@ class OverviewActivity : AppCompatActivity() {
     private fun setupViews() {
         fab.setOnClickListener {
             val createInterviewIntent = Intent(this, CreateInterviewActivity::class.java)
-            val options = ActivityOptionsCompat.makeSceneTransitionAnimation(this, fab, "transition_create_interview")
             iv_fab.animate().setDuration(70).alpha(0F).start()
             fab.animate().setDuration(70).rotation(0F).start()
             val scaleFactor = contentView!!.width.toFloat() / fab.width.toFloat()
@@ -85,6 +86,10 @@ class OverviewActivity : AppCompatActivity() {
         }
         rv_interviews.adapter = mInterviewsAdapter
         rv_interviews.layoutManager = GridLayoutManager(this, resources.getInteger(R.integer.overview_columns))
+        val usedStorage = getUsedStorage(this)
+        val totalStorage = getTotalStorage()
+        storage_bar.progress = (usedStorage.toFloat() / totalStorage.toFloat() * 100.0).toInt()
+        tv_storage.text = "Used ${usedStorage / 1000000} MB of ${totalStorage / 1000000} MB."
     }
 
     private fun loadInterviews() {

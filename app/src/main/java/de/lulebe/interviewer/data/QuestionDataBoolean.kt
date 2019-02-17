@@ -21,6 +21,9 @@ data class QuestionDataBoolean (
     interface QuestionDataBooleanDao {
         @Insert
         fun createQuestionDataBoolean(questionDataBoolean: QuestionDataBoolean)
+
+        @Query("SELECT * FROM question_data_boolean WHERE questionId=:questionId")
+        fun getQuestionDataForQuestion(questionId: UUID) : QuestionDataBoolean
     }
 
 }

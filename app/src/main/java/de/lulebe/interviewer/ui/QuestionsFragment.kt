@@ -11,13 +11,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import de.lulebe.interviewer.CreateQuestionActivity
-import de.lulebe.interviewer.InterviewActivity
+import de.lulebe.interviewer.*
 
-import de.lulebe.interviewer.R
-import de.lulebe.interviewer.SingleAnswerActivity
 import de.lulebe.interviewer.data.AppDatabase
 import de.lulebe.interviewer.data.Question
+import de.lulebe.interviewer.ui.adapters.AnswerListAdapter
 import de.lulebe.interviewer.ui.adapters.QuestionsAdapter
 import de.lulebe.interviewer.ui.helpers.fadeIn
 import kotlinx.android.synthetic.main.fragment_questions.*
@@ -87,12 +85,10 @@ class QuestionsFragment : Fragment() {
     }
 
     private fun showAnswers(question: Question) {
-        /*
         val answersIntent = Intent(context, QuestionActivity::class.java)
+        answersIntent.putExtra("page", QuestionActivity.FRAGMENT_ANSWERS)
         answersIntent.putExtra("questionId", question.id.toString())
-        answersIntent.putExtra("page", QuestionActivity.PAGE_ANSWERS)
         startActivity(answersIntent)
-        */
     }
 
     private fun editQuestion(question: Question) {

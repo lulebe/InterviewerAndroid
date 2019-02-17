@@ -1,5 +1,6 @@
 package de.lulebe.interviewer.data
 
+import android.arch.lifecycle.LiveData
 import android.arch.persistence.room.*
 import java.util.*
 

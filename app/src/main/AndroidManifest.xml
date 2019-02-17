@@ -39,6 +39,8 @@
         <activity android:name=".SettingsActivity" />
         <activity android:name=".SingleAnswerActivity"
             android:parentActivityName=".InterviewActivity"/>
+        <activity android:name=".QuestionActivity"
+            android:parentActivityName=".InterviewActivity"/>
     </application>
 
 </manifest>

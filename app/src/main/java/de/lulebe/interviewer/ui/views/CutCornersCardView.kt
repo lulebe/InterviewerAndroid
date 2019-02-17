@@ -9,10 +9,7 @@ import android.support.v4.content.res.ResourcesCompat
 import android.support.v4.view.MotionEventCompat
 import android.util.AttributeSet
 import android.util.TypedValue
-import android.view.GestureDetector
-import android.view.Menu
-import android.view.MotionEvent
-import android.view.View
+import android.view.*
 import android.view.animation.DecelerateInterpolator
 import android.widget.FrameLayout
 import de.lulebe.interviewer.R
@@ -43,6 +40,7 @@ class CutCornersCardView : FrameLayout {
         }
         setOnLongClickListener {
             if (findViewWithTag<View>("menu") != null && findViewWithTag<View>("content") != null) {
+                performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
                 toggleMenu()
                 return@setOnLongClickListener true
             }

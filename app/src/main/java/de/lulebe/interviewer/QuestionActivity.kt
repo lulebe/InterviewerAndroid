@@ -4,33 +4,27 @@ import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
-import de.lulebe.interviewer.data.AppDatabase
-import de.lulebe.interviewer.ui.QuestionsFragment
-import de.lulebe.interviewer.ui.SettingsFragment
-import de.lulebe.interviewer.ui.StatsFragment
+import android.view.MenuItem
+import de.lulebe.interviewer.ui.question.QuestionAnswersFragment
+import de.lulebe.interviewer.ui.question.QuestionSettingsFragment
 import kotlinx.android.synthetic.main.activity_interview.*
-import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.uiThread
 import java.util.*
 
-class InterviewActivity : AppCompatActivity() {
-
+class QuestionActivity : AppCompatActivity() {
     companion object {
-        const val FRAGMENT_STATS = 1
-        const val FRAGMENT_LIST = 2
-        const val FRAGMENT_SETTINGS = 3
+        const val FRAGMENT_ANSWERS = 1
+        const val FRAGMENT_SETTINGS = 2
     }
 
     private val fragments = WeakHashMap<Int, Fragment>()
     private var mCurrentFragmentNo = 0
 
-    private var interviewId : UUID? = null
+    private var questionId : UUID? = null
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         val f = when (item.itemId) {
-            R.id.navigation_list -> FRAGMENT_LIST
             R.id.navigation_settings -> FRAGMENT_SETTINGS
-            else -> FRAGMENT_STATS
+            else -> FRAGMENT_ANSWERS
         }
         if (f == mCurrentFragmentNo) return@OnNavigationItemSelectedListener true
         val animIn = if (f > mCurrentFragmentNo) R.anim.mainfragments_in_from_right else R.anim.mainfragments_in_from_left
@@ -49,7 +43,7 @@ class InterviewActivity : AppCompatActivity() {
 
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
         if (savedInstanceState == null) {
-            val fragmentNo = intent.getIntExtra("page", FRAGMENT_LIST)
+            val fragmentNo = intent.getIntExtra("page", FRAGMENT_ANSWERS)
             mCurrentFragmentNo = fragmentNo
             val newFragment = getFragment(fragmentNo)
             supportFragmentManager.beginTransaction()
@@ -60,8 +54,7 @@ class InterviewActivity : AppCompatActivity() {
             mCurrentFragmentNo = savedInstanceState.getInt("currentFragmentNo")
             navigation.selectedItemId = savedInstanceState.getInt("selectedBottomnavItem")
         }
-        interviewId = UUID.fromString(intent.getStringExtra("interviewId"))
-        loadTitle()
+        questionId = UUID.fromString(intent.getStringExtra("questionId"))
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
@@ -72,33 +65,31 @@ class InterviewActivity : AppCompatActivity() {
         super.onSaveInstanceState(outState)
     }
 
-    fun getInterviewId() = interviewId
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> finish()
+            else -> return super.onOptionsItemSelected(item)
+        }
+        return true
+    }
+
+    fun getQuestionId() = questionId
 
     private fun getFragment(fragment: Int) : Fragment {
         fragments[fragment]?.let {
             return it
         }
         val f = when (fragment) {
-            FRAGMENT_LIST -> QuestionsFragment()
-            FRAGMENT_SETTINGS -> SettingsFragment()
-            else -> StatsFragment()
+            FRAGMENT_SETTINGS -> QuestionSettingsFragment()
+            else -> QuestionAnswersFragment()
         }
         fragments[fragment] = f
         return f
     }
 
     private fun getBottomNavItemForFragment(fragmentNo: Int) = when(fragmentNo) {
-        FRAGMENT_LIST -> R.id.navigation_list
         FRAGMENT_SETTINGS -> R.id.navigation_settings
-        else -> R.id.navigation_stats
+        else -> R.id.navigation_answers
     }
 
-    private fun loadTitle() {
-        doAsync {
-            val interview = AppDatabase.getDatabase(applicationContext).interviewDao().getInterviewById(interviewId!!)
-            uiThread {
-                setTitle(interview.name)
-            }
-        }
-    }
 }
